@@ -5,29 +5,31 @@
 # Web: UNKNOW
 # youtube: UNKNOW
 # License: MIT License
-# https://github.com/{github}/thinkdiff/blob/master/LICENSE 
+# https://github.com/{github}/thinkdiff/blob/master/LICENSE
 
 # --------------------------
 #      Execute JavaScript
 # --------------------------
+
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium import webdriver
+import pickle
 import sys
 import os
 import os.path
 
-path_to_app = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app')
+path_to_app = os.path.join(os.path.dirname(
+    os.path.realpath(sys.argv[0])), 'framework', 'app')
 
 sys.path.append(path_to_app)
 
-import pickle
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 from dwap.utils import *
 
 try:
     installed_chrome_version = getChromeVersion()
 
-    #logo from source http://patorjk.com/software/taag/#p=display&f=Chunky&t=dwap
+    # logo from source http://patorjk.com/software/taag/#p=display&f=Chunky&t=dwap
     print("~                                     ")
     print("~      __                             ")
     print("~  .--|  |.--.--.--.---.-.-----.      ")
@@ -39,26 +41,32 @@ try:
     printEnviroment()
 
     print("~                                     ")
-    print("~  using chrome v" + installed_chrome_version + ", https://www.dwap.com    ")
+    print("~  using chrome v" + installed_chrome_version +
+          ", https://www.dwap.com    ")
     print("~                                     ")
 
     print("~  CTRL+C  to stop                    ")
     print("~                                     ")
 
     chrome_options = Options()
-    #chrome_options.add_argument("--headless")
-    #chrome_options.add_argument("--window-size=1024x1400")
-    chrome_options.add_argument('--user-data-dir=' + os.path.join(dwap_env['origin_path'], 'User_Data'))
+    # chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--window-size=1024x1400")
+    chrome_options.add_argument(
+        '--user-data-dir=' + os.path.join(dwap_env['origin_path'], 'User_Data'))
     chrome_options.add_argument('--allow-running-insecure-content')
 
-    # download Chrome Webdriver  
+    # download Chrome Webdriver
     # http://chromedriver.chromium.org/downloads
     # put driver executable file in the script directory
-    chrome_driver = os.path.join(dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
+    chrome_driver = os.path.join(
+        dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
 
-    chrome_options.add_extension(os.path.join(dwap_env['path_to_modules'], 'Ignore-x.zip')) ## averiguar como se agrega en firefox
-    
-    driver = webdriver.Chrome(options=chrome_options, executable_path=chrome_driver)
+    # averiguar como se agrega en firefox
+    chrome_options.add_extension(os.path.join(
+        dwap_env['path_to_modules'], 'Ignore-x.zip'))
+
+    driver = webdriver.Chrome(options=chrome_options,
+                              executable_path=chrome_driver)
 
     driver.get("https://web.whatsapp.com")
 
