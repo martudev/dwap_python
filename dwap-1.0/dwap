@@ -19,8 +19,7 @@ import sys
 import os
 import os.path
 
-path_to_app = os.path.join(os.path.dirname(
-    os.path.realpath(sys.argv[0])), 'framework', 'app')
+path_to_app = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app')
 
 sys.path.append(path_to_app)
 
@@ -41,8 +40,7 @@ try:
     printEnviroment()
 
     print("~                                     ")
-    print("~  using chrome v" + installed_chrome_version +
-          ", https://www.dwap.com    ")
+    print("~  using chrome v" + installed_chrome_version + ", https://www.dwap.com    ")
     print("~                                     ")
 
     print("~  CTRL+C  to stop                    ")
@@ -51,22 +49,18 @@ try:
     chrome_options = Options()
     # chrome_options.add_argument("--headless")
     # chrome_options.add_argument("--window-size=1024x1400")
-    chrome_options.add_argument(
-        '--user-data-dir=' + os.path.join(dwap_env['origin_path'], 'User_Data'))
+    chrome_options.add_argument('--user-data-dir=' + os.path.join(dwap_env['origin_path'], 'User_Data'))
     chrome_options.add_argument('--allow-running-insecure-content')
 
     # download Chrome Webdriver
     # http://chromedriver.chromium.org/downloads
     # put driver executable file in the script directory
-    chrome_driver = os.path.join(
-        dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
+    chrome_driver = os.path.join(dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
 
     # averiguar como se agrega en firefox
-    chrome_options.add_extension(os.path.join(
-        dwap_env['path_to_modules'], 'Ignore-x.zip'))
+    chrome_options.add_extension(os.path.join(dwap_env['path_to_modules'], 'Ignore-x.zip'))
 
-    driver = webdriver.Chrome(options=chrome_options,
-                              executable_path=chrome_driver)
+    driver = webdriver.Chrome(options=chrome_options, executable_path=chrome_driver)
 
     driver.get("https://web.whatsapp.com")
 
