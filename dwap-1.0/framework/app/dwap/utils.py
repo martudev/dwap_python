@@ -8,8 +8,9 @@
 # https://github.com/{github}/thinkdiff/blob/master/LICENSE
 
 # --------------------------
-#      Execute JavaScript
+#      Utils
 # --------------------------
+
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import sys

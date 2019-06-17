@@ -8,7 +8,7 @@
 # https://github.com/{github}/thinkdiff/blob/master/LICENSE
 
 # --------------------------
-#      Execute JavaScript
+#      Dwap
 # --------------------------
 
 from selenium.webdriver.common.keys import Keys
