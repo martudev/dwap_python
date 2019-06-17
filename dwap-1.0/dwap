@@ -23,7 +23,7 @@ path_to_app = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'fram
 
 sys.path.append(path_to_app)
 
-from dwap.utils import *
+from dwap.utils.utils import *
 
 try:
     installed_chrome_version = getChromeVersion()
@@ -37,7 +37,7 @@ try:
     print("~                        |__|         ")
     print("~                                     ")
 
-    printEnviroment()
+    cmds_program()
 
     print("~                                     ")
     print("~  using chrome v" + installed_chrome_version + ", https://www.dwap.com    ")

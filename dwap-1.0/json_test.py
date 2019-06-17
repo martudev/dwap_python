@@ -11,7 +11,12 @@ path_to_file = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'fra
 data = ''
 with open(path_to_file) as json_file:  
     data = json.load(json_file)
-    data['default-folder'] = 'testing'
+    data['test'] = []
+    data['test'].append({  
+        'name': 'Scott',
+        'website': 'stackabuse.com',
+        'from': 'Nebraska'
+    })
 
 with open(path_to_file, 'w') as outfile:
     json.dump(data, outfile, sort_keys=True, indent=4)
