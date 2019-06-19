@@ -133,20 +133,23 @@ def cmds_program():
         print("~                                                                      ")
         sys.exit(0)
 
+
 def commandNotFound():
     print("~                                       ")
     print("~  Command not found.  See dwap help    ")
     print("~                                       ")
     return
 
+
 def getChromeVersion():
     chrome_driver = os.path.join(dwap_env['path_to_modules'], 'chromedriver_74')
     chrome_version_options = Options()
-    chrome_version_options.add_argument("--headless") # lo hacemos para minimizar el chrome ya que solo queremos obtener la version
-    versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver) # 'chromedriver_74' => 'version' | 'chromedriver_75' => 'browserVersion'
+    chrome_version_options.add_argument("--headless")  # lo hacemos para minimizar el chrome ya que solo queremos obtener la version
+    versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)  # 'chromedriver_74' => 'version' | 'chromedriver_75' => 'browserVersion'
     browser_version = versionDriver.capabilities['version']
     versionDriver.close()
     return browser_version.split('.')[0]
+
 
 def changeDefaultFolder(path, name_folder):
     path_to_file = path + '/data/config.json'
@@ -154,6 +157,7 @@ def changeDefaultFolder(path, name_folder):
     config['default-folder'] = name_folder
     writeJson(path_to_file, config)
     return
+
 
 def setDefaultFolder(path, name_folder):
     path_to_file = path + '/data/config.json'
