@@ -67,7 +67,9 @@ def cmds_program():
         print("~ -------------------------                                            ")
         print("~  * dwap run                                                          ")
         print("~  * dwap test                                                         ")
-        print("~  * dwap test --test_wpp=true                                                         ")
+        print("~  * dwap test --test_wpp=true                                         ")
+        print("~  * dwap change --default=[name_of_folder]                            ")
+        print("~  * dwap set --default=[name_of_folder]                               ")
         print("~  * dwap help                                                         ")
         print("~                                                                      ")
         print("~                                                                      ")
@@ -111,6 +113,14 @@ def cmds_program():
             else:
                 commandNotFound()
                 sys.exit(0)
+    elif enviroment == 'revert':
+        args = getArgs(2).split('=')
+        if args[0] == '--default':
+            revertDefaultFolder(dwap_env['path_to_app'])
+            print("~                                              ")
+            print("~  Done! reverted default folder.              ")
+            print("~                                              ")
+            sys.exit(0)
         else:
             commandNotFound()
             sys.exit(0)
@@ -149,6 +159,21 @@ def setDefaultFolder(path, name_folder):
     path_to_file = path + '/data/config.json'
     config = openJson(path_to_file)
     config['default-folder'] = name_folder
-    config['backup'] = name_folder
+    writeJson(path_to_file, config)
+
+    path_to_file = path + '/data/config.backup.json'
+    config = openJson(path_to_file)
+    config['default-folder'] = name_folder
+    writeJson(path_to_file, config)
+    return
+
+def revertDefaultFolder(path):
+    path_to_file = path + '/data/config.backup.json'
+    config = openJson(path_to_file)
+    name_folder = config['default-folder']
+
+    path_to_file = path + '/data/config.json'
+    config = openJson(path_to_file)
+    config['default-folder'] = name_folder
     writeJson(path_to_file, config)
     return
