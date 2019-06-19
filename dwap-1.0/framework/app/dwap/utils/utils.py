@@ -171,6 +171,7 @@ def setDefaultFolder(path, name_folder):
     writeJson(path_to_file, config)
     return
 
+
 def revertDefaultFolder(path):
     path_to_file = path + '/data/config.backup.json'
     config = openJson(path_to_file)
