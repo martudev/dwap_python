@@ -71,60 +71,64 @@ def cmds_program():
         print("~  * dwap run                                                          ")
         print("~  * dwap test                                                         ")
         print("~  * dwap test --test_wpp=true                                         ")
-        print("~  * dwap change --default=[name_of_folder]                            ")
-        print("~  * dwap set --default=[name_of_folder]                               ")
-        print("~  * dwap revert --default                                             ")
+        print("~  * dwap change --route                                               ")
+        print("~  * dwap set --route                                                  ")
+        print("~  * dwap revert --route                                               ")
         print("~  * dwap help                                                         ")
         print("~                                                                      ")
         print("~                                                                      ")
         sys.exit(0)
     elif enviroment == 'change':
-        args = getArgs(2).split('=')
-        if args[0] == '--default':
-            if '=' in getArgs(2):
-                if len(args[1]) >= 1:
-                    changeDefaultFolder(dwap_env['path_to_app'], args[1])
-                    print("~                                                     ")
-                    print("~  Done! changed default folder to '" + args[1] + "'")
-                    print("~                                                     ")
-                    sys.exit(0)
-                else:
-                    print("~                                                     ")
-                    print("~  Not name of folder! please write a folder name     ")
-                    print("~                                                     ")
-                    sys.exit(0)
+        args = getArgs(2)
+        if args == '--route':
+            path = os.getcwd()
+            if existServerJSInPath(path):
+                changeDefaultRoute(dwap_env['path_to_app'], path)
+                print("~                                               ")
+                print("~  Done! changed default route to '" + path + "'")
+                print("~                                               ")
+                sys.exit(0)
             else:
-                commandNotFound()
+                print("~                                              ")
+                print("~  Not found 'server.js' in this path          ")
+                print("~                                              ")
                 sys.exit(0)
         else:
             commandNotFound()
             sys.exit(0)
     elif enviroment == 'set':
-        args = getArgs(2).split('=')
-        if args[0] == '--default':
-            if '=' in getArgs(2):
-                if len(args[1]) > 1:
-                    setDefaultFolder(dwap_env['path_to_app'], args[1])
-                    print("~                                                     ")
-                    print("~  Done! seted default folder to '" + args[1] + "'")
-                    print("~                                                     ")
-                    sys.exit(0)
-                else:
-                    print("~                                                     ")
-                    print("~  Not name of folder! please write a folder name     ")
-                    print("~                                                     ")
-                    sys.exit(0)
-            else:
-                commandNotFound()
+        args = getArgs(2)
+        if args == '--route':
+            path = os.getcwd()
+            if existServerJSInPath(path):
+                setDefaultRoute(dwap_env['path_to_app'], path)
+                print("~                                               ")
+                print("~  Done! changed default route to '" + path + "'")
+                print("~                                               ")
                 sys.exit(0)
-    elif enviroment == 'revert':
-        args = getArgs(2).split('=')
-        if args[0] == '--default':
-            revertDefaultFolder(dwap_env['path_to_app'])
-            print("~                                              ")
-            print("~  Done! reverted default folder.              ")
-            print("~                                              ")
+            else:
+                print("~                                              ")
+                print("~  Not found 'server.js' in this path          ")
+                print("~                                              ")
+                sys.exit(0)
+        else:
+            commandNotFound()
             sys.exit(0)
+    elif enviroment == 'revert':
+        args = getArgs(2)
+        if args == '--route':
+            path = os.getcwd()
+            if existServerJSInPath(path):
+                revertDefaultRoute(dwap_env['path_to_app'])
+                print("~                                               ")
+                print("~  Done! changed default route to '" + path + "'")
+                print("~                                               ")
+                sys.exit(0)
+            else:
+                print("~                                              ")
+                print("~  Not found 'server.js' in this path          ")
+                print("~                                              ")
+                sys.exit(0)
         else:
             commandNotFound()
             sys.exit(0)
@@ -155,34 +159,40 @@ def getChromeVersion():
     return browser_version.split('.')[0]
 
 
-def changeDefaultFolder(path, name_folder):
+def changeDefaultRoute(path, path_to_serverJs):
     path_to_file = path + '/data/config.json'
     config = openJson(path_to_file)
-    config['default-folder'] = name_folder
+    config['route'] = path_to_serverJs
     writeJson(path_to_file, config)
     return
 
 
-def setDefaultFolder(path, name_folder):
+def setDefaultRoute(path, path_to_serverJs):
     path_to_file = path + '/data/config.json'
     config = openJson(path_to_file)
-    config['default-folder'] = name_folder
+    config['route'] = name_path_to_serverJsfolder
     writeJson(path_to_file, config)
 
     path_to_file = path + '/data/config.backup.json'
     config = openJson(path_to_file)
-    config['default-folder'] = name_folder
+    config['route'] = path_to_serverJs
     writeJson(path_to_file, config)
     return
 
 
-def revertDefaultFolder(path):
+def revertDefaultRoute(path):
     path_to_file = path + '/data/config.backup.json'
     config = openJson(path_to_file)
-    name_folder = config['default-folder']
+    name_folder = config['route']
 
     path_to_file = path + '/data/config.json'
     config = openJson(path_to_file)
-    config['default-folder'] = name_folder
+    config['route'] = name_folder
     writeJson(path_to_file, config)
     return
+
+def existThisFileInDirectory(path, file_name):
+    return os.path.exists(path + "/" + file_name)
+
+def existServerJSInPath(path):
+    return existThisFileInDirectory(path, "server.js")
