@@ -160,17 +160,24 @@ def getChromeVersion():
 
 
 def changeDefaultRoute(path, path_to_serverJs):
-    path_to_file = path + '/data/config.json'
-    config = openJson(path_to_file)
-    config['route'] = path_to_serverJs
-    writeJson(path_to_file, config)
+    path_to_config_file = path + '/data/config.json'
+    path_to_cbackup_file = path + '/data/config.backup.json'
+    config = openJson(path_to_config_file)
+    if config['route'] == '/unknow/':
+        config['route'] = path_to_serverJs
+        configBackup = openJson(path_to_cbackup_file)
+        configBackup['route'] = path_to_serverJs
+        writeJson(path_to_cbackup_file, configBackup)
+    else:
+        config['route'] = path_to_serverJs
+    writeJson(path_to_config_file, config)
     return
 
 
 def setDefaultRoute(path, path_to_serverJs):
     path_to_file = path + '/data/config.json'
     config = openJson(path_to_file)
-    config['route'] = name_path_to_serverJsfolder
+    config['route'] = path_to_serverJs
     writeJson(path_to_file, config)
 
     path_to_file = path + '/data/config.backup.json'
