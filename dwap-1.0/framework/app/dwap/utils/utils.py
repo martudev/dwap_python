@@ -64,6 +64,7 @@ def cmds_program():
         print("~  Options [options]:                                                  ")
         print("~ --------------------                                                 ")
         print("~  * test_wpp      Run de WhatsApp framework as default           Example: dwap test --test_wpp=true")
+        print("~  * route         Change a route directory in settings           Example: dwap change --route")
         print("~                                                                      ")
         print("~                                                                      ")
         print("~  All Example Commands:                                               ")
@@ -76,6 +77,9 @@ def cmds_program():
         print("~  * dwap revert --route                                               ")
         print("~  * dwap help                                                         ")
         print("~                                                                      ")
+        print("~                                                                      ")
+        print("~                                                                      ")
+        print("~  More Info:  https://www.dwap.com/help                               ")
         print("~                                                                      ")
         sys.exit(0)
     elif enviroment == 'change':
@@ -119,10 +123,15 @@ def cmds_program():
         if args == '--route':
             path = os.getcwd()
             if existServerJSInPath(path):
-                revertDefaultRoute(dwap_env['path_to_app'])
-                print("~                                               ")
-                print("~  Done! changed default route to '" + path + "'")
-                print("~                                               ")
+                new_path = revertDefaultRoute(dwap_env['path_to_app'])
+                if new_path is None:
+                    print("~                                        ")
+                    print("~  Error! /data/ folder not exist.   Run dwap change --route to create /data/ folder")
+                    print("~                                        ")
+                else:
+                    print("~                                               ")
+                    print("~  Done! changed default route to '" + new_path + "'")
+                    print("~                                               ")
                 sys.exit(0)
             else:
                 print("~                                              ")
@@ -186,28 +195,51 @@ def changeDefaultRoute(path, path_to_serverJs):
 
 
 def setDefaultRoute(path, path_to_serverJs):
-    path_to_file = path + '/data/config.json'
-    config = openJson(path_to_file)
-    config['route'] = path_to_serverJs
-    writeJson(path_to_file, config)
+    path_to_config_file = path + '/data/config.json'
+    path_to_cbackup_file = path + '/data/config.backup.json'
 
-    path_to_file = path + '/data/config.backup.json'
-    config = openJson(path_to_file)
-    config['route'] = path_to_serverJs
-    writeJson(path_to_file, config)
+    if not existDirectory(path + '/data'):
+        os.mkdir(path + '/data')
+
+    if not existThisFileInDirectory(path + '/data', 'config.json'):
+        data = {}
+        data['route'] = path_to_serverJs
+        openFileAndWriteJson(path_to_config_file, data)
+    else:
+        data = openJson(path_to_config_file)
+        data['route'] = path_to_serverJs
+        writeJson(path_to_config_file, data)
+
+    if not existThisFileInDirectory(path + '/data', 'config.backup.json'):
+        data = {}
+        data['route'] = path_to_serverJs
+        openFileAndWriteJson(path_to_cbackup_file, data)
+    else:
+        data = openJson(path_to_cbackup_file)
+        data['route'] = path_to_serverJs
+        writeJson(path_to_cbackup_file, data)
+        
     return
 
 
 def revertDefaultRoute(path):
-    path_to_file = path + '/data/config.backup.json'
-    config = openJson(path_to_file)
-    name_folder = config['route']
+    path_to_config_file = path + '/data/config.json'
+    path_to_cbackup_file = path + '/data/config.backup.json'
 
-    path_to_file = path + '/data/config.json'
-    config = openJson(path_to_file)
-    config['route'] = name_folder
-    writeJson(path_to_file, config)
-    return
+    if not existDirectory(path + '/data'):
+        return None
+
+    path_route = None
+    if existThisFileInDirectory(path + '/data', 'config.backup.json'):
+        data = openJson(path_to_cbackup_file)
+        path_route = data['route']
+
+    if existThisFileInDirectory(path + '/data', 'config.json'):
+        data = openJson(path_to_config_file)
+        data['route'] = path_route
+        writeJson(path_to_config_file, data)
+
+    return path_route
 
 
 def existServerJSInPath(path):
