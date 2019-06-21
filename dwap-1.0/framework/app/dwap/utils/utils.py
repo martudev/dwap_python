@@ -162,15 +162,26 @@ def getChromeVersion():
 def changeDefaultRoute(path, path_to_serverJs):
     path_to_config_file = path + '/data/config.json'
     path_to_cbackup_file = path + '/data/config.backup.json'
-    config = openJson(path_to_config_file)
-    if config['route'] == '/unknow/':
-        config['route'] = path_to_serverJs
-        configBackup = openJson(path_to_cbackup_file)
-        configBackup['route'] = path_to_serverJs
-        writeJson(path_to_cbackup_file, configBackup)
+
+    if not existDirectory(path + '/data'):
+        os.mkdir(path + '/data')
+
+    first_time_config_file = False
+    if not existThisFileInDirectory(path + '/data', 'config.json'):
+        data = {}
+        data['route'] = path_to_serverJs
+        openFileAndWriteJson(path_to_config_file, data)
+        first_time_config_file = True
     else:
-        config['route'] = path_to_serverJs
-    writeJson(path_to_config_file, config)
+        data = openJson(path_to_config_file)
+        data['route'] = path_to_serverJs
+        writeJson(path_to_config_file, data)
+
+    if not existThisFileInDirectory(path + '/data', 'config.backup.json') and first_time_config_file:
+        data = {}
+        data['route'] = path_to_serverJs
+        openFileAndWriteJson(path_to_cbackup_file, data)
+
     return
 
 
@@ -198,8 +209,6 @@ def revertDefaultRoute(path):
     writeJson(path_to_file, config)
     return
 
-def existThisFileInDirectory(path, file_name):
-    return os.path.exists(path + "/" + file_name)
 
 def existServerJSInPath(path):
     return existThisFileInDirectory(path, "server.js")

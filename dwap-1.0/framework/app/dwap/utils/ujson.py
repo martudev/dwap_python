@@ -5,14 +5,21 @@ import os
 import os.path
 import pickle
 import json
+from .ufiles import *
 
 
 def openJson(path_to_file):
-    with open(path_to_file) as json_file:
+    with openFileAsReadMode(path_to_file) as json_file:
         return json.load(json_file)
 
 
 def writeJson(path_to_file, file):
-    with open(path_to_file, 'w') as outfile:
+    with openFileAsWriteModeAndCreateIfNotExist(path_to_file) as outfile:
         json.dump(file, outfile, sort_keys=True, indent=4)
+        outfile.close()
         return
+
+
+def openFileAndWriteJson(path_to_file, file):
+    writeJson(path_to_file, file)
+    return
