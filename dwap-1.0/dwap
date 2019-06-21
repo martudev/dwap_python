@@ -64,6 +64,10 @@ try:
 
     driver.get("https://web.whatsapp.com")
 
+    script = getServerScript()
+
+    driver.execute_script(script)
+
     input('Press <ENTER> to stop server')
 
     driver.close()

@@ -244,3 +244,16 @@ def revertDefaultRoute(path):
 
 def existServerJSInPath(path):
     return existThisFileInDirectory(path, "server.js")
+
+def getServerScript():
+    path_to_config_file = dwap_env['path_to_app'] + '/data'
+    if existThisFileInDirectory(path_to_config_file, 'config.json'):
+        config_json_data = openJson(path_to_config_file + '/config.json')
+        js_file = openFileAsReadMode(config_json_data['route'] + '/server.js')
+        return js_file.read()
+    else:
+        print("~                                                        ")
+        print("~  File 'config.json' not found in /data/ directory      ")
+        print("~                                                        ")
+        sys.exit(0)
+    return
