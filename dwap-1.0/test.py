@@ -1,29 +1,48 @@
-#!/usr/bin/env python3	
+#!/usr/bin/env python3
 from threading import Thread, Event
 from multiprocessing import Process
 import time
- 
- 
-# Event object used to send signals from one thread to another
-stop_event = Event()
-action_thread = None
- 
-def timer():
-    while True:
-        time.sleep(1)
- 
-def timeout(seconds, callback):
-    # We create another Thread
-    action_thread = Process(target=timer)
- 
-    # Here we start the thread and we wait 5 seconds before the code continues to execute.
-    action_thread.start()
-    action_thread.join(timeout=seconds)
 
-    # We send a signal that the other thread should stop.
-    action_thread.terminate()
- 
-    callback("hola")
- 
+
+stop_it_global = Event()
+
+def stop(stop_it):
+    if stop_it is not None:
+        stop_it.set()
+
+
+def timer(seconds, stop_it, callback, args):
+    i = 0
+    while True:
+        i += 1
+        time.sleep(seconds)
+        callback(*args)
+
+        if stop_it is not None:
+            if stop_it.is_set():
+                break
+
+
+def test(first, seccond):
+    print(first + " / " + seccond)
+
+
+def timeout(seconds, repeat, callback, args):
+    # We create another Thread and Event
+    stop_it = None
+    if repeat == True:
+        stop_it = Event()
+        action_thread = Thread(target=timer, args=(seconds, stop_it, callback, args,))
+        action_thread.start()
+    else:
+        action_thread = Thread(target=timer, args=(seconds, stop_it_global, callback, args,))
+        action_thread.start()
+        action_thread.join(timeout=seconds)
+        stop_it_global.set()
+    return stop_it
+
+
 if __name__ == '__main__':
-    timeout(seconds=0.5, callback=print)
+    t1 = timeout(seconds=1, repeat=True, callback=print, args=("first", "seccond",))
+    t2 = timeout(seconds=3, repeat=False, callback=test, args=("first", "seccond",))
+    stop(t2)  # --> stops thread 2 in this case
