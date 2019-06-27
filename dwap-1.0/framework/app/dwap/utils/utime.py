@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from threading import Thread, Event
-from multiprocessing import Process
 import time
 
 
@@ -23,10 +22,6 @@ def timer(seconds, stop_it, callback, args):
                 break
 
 
-def test(first, seccond):
-    print(first + " / " + seccond)
-
-
 def timeout(seconds, repeat, callback, args):
     # We create another Thread and Event
     stop_it = None
@@ -42,7 +37,7 @@ def timeout(seconds, repeat, callback, args):
     return stop_it
 
 
-if __name__ == '__main__':
-    t1 = timeout(seconds=1, repeat=True, callback=print, args=("first", "seccond",))
-    t2 = timeout(seconds=3, repeat=False, callback=test, args=("first", "seccond",))
-    stop(t2)  # --> stops thread 2 in this case
+# Example
+# t1 = timeout(seconds=1, repeat=True, callback=print, args=("first", "seccond",))
+# t2 = timeout(seconds=3, repeat=False, callback=test, args=("first", "seccond",))
+# stop(t2)  # --> stops thread 2 in this case
