@@ -24,6 +24,7 @@ path_to_app = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'fram
 sys.path.append(path_to_app)
 
 from dwap.utils.utils import *
+from dwap.utils.utime import *
 
 try:
     installed_chrome_version = getChromeVersion()
@@ -66,12 +67,14 @@ try:
 
     script = getServerScript()
 
-    driver.execute_script(script)
+    #driver.execute_script(script)
 
-    input('Press <ENTER> to stop server')
+    t1 = timeout(seconds=1, repeat=True, callback=print_consolelog_chrome, args=(driver,))
 
-    driver.close()
-    sys.exit(0)
+    #input('Press <ENTER> to stop server')
+
+    #driver.close()
+    sys.exit(-1)
 
 except KeyboardInterrupt:
     print('\nProgram stoped...')

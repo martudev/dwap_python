@@ -218,7 +218,7 @@ def setDefaultRoute(path, path_to_serverJs):
         data = openJson(path_to_cbackup_file)
         data['route'] = path_to_serverJs
         writeJson(path_to_cbackup_file, data)
-        
+
     return
 
 
@@ -245,6 +245,7 @@ def revertDefaultRoute(path):
 def existServerJSInPath(path):
     return existThisFileInDirectory(path, "server.js")
 
+
 def getServerScript():
     path_to_config_file = dwap_env['path_to_app'] + '/data'
     if existThisFileInDirectory(path_to_config_file, 'config.json'):
@@ -257,3 +258,8 @@ def getServerScript():
         print("~                                                        ")
         sys.exit(0)
     return
+
+
+def print_consolelog_chrome(driver):
+    for entry in driver.get_log('browser'):
+        print(entry)
