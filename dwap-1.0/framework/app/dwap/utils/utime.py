@@ -50,7 +50,7 @@ def timeout(seconds, repeat, callback, args, **kwards):
             print('\n' + message_to_print)
             sys.exit(0)
         else:
-            print('\nProgram stoped...aa')
+            print('\nProgram stoped...')
             sys.exit(0)
 
 

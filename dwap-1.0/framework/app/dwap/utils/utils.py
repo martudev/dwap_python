@@ -18,6 +18,7 @@ import os
 import os.path
 
 from .ujson import *
+from termcolor import colored
 
 dwap_env = dict()
 
@@ -37,7 +38,7 @@ def getEnviroment():
     return getArgs(1)
 
 
-def cmds_program():
+def cmds_program(chrome_options):
     enviroment = getEnviroment()
     if enviroment == 'test':
         print("~  runing in TEST mode.               ")
@@ -45,6 +46,14 @@ def cmds_program():
     elif enviroment == 'run':
         print("~  runing in default mode.             ")
         print("~                                      ")
+        print("~                                      ")
+        args = getArgs(2).split('=')
+        if len(args) == 2:
+            if args[0] == '--keep':
+                if args[1] == 'chrome':
+                    chrome_options.add_experimental_option("detach", True)
+                    print("~  with chrome keep open.    ")
+                    print("~                            ")
     elif enviroment == 'help':
         print("~  Usage: dwap <cmd> or dwap <cmd> --[options]=<value>                 ")
         print("~                                                                      ")
@@ -141,11 +150,6 @@ def cmds_program():
         else:
             commandNotFound()
             sys.exit(0)
-    elif enviroment == '--keep':
-        args = getArgs(2).join('=')
-        if args is not None:
-            if args[0] == 'chrome':
-                print("asd")
     else:
         print("~  Usage: dwap <cmd> --[options]=<value>                               ")
         print("~                                                                      ")
@@ -266,5 +270,12 @@ def getServerScript():
 
 
 def print_consolelog_chrome(driver):
+    #getlog = driver.execute('getLog', {'type': 'performance'})['value']
+    #print(driver.get_log('performance'))
     for entry in driver.get_log('browser'):
-        print(entry)
+        level = entry['level']
+        if entry['level'] == 'WARNING':
+            level = colored(entry['level'], 'yellow')
+        elif entry['level'] == 'SEVERE':
+            level = colored(entry['level'], 'red')
+        print('[' + level + '] ' + entry['message'])
