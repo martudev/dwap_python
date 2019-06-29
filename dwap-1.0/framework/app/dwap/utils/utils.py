@@ -141,6 +141,11 @@ def cmds_program():
         else:
             commandNotFound()
             sys.exit(0)
+    elif enviroment == '--keep':
+        args = getArgs(2).join('=')
+        if args is not None:
+            if args[0] == 'chrome':
+                print("asd")
     else:
         print("~  Usage: dwap <cmd> --[options]=<value>                               ")
         print("~                                                                      ")
@@ -164,7 +169,7 @@ def getChromeVersion():
     chrome_version_options.add_argument("--headless")  # lo hacemos para minimizar el chrome ya que solo queremos obtener la version
     versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)  # 'chromedriver_74' => 'version' | 'chromedriver_75' => 'browserVersion'
     browser_version = versionDriver.capabilities['version']
-    versionDriver.close()
+    versionDriver.quit()
     return browser_version.split('.')[0]
 
 
