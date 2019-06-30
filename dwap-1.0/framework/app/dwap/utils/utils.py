@@ -270,8 +270,6 @@ def getServerScript():
 
 
 def print_consolelog_chrome(driver):
-    #getlog = driver.execute('getLog', {'type': 'performance'})['value']
-    #print(driver.get_log('performance'))
     for entry in driver.get_log('browser'):
         level = entry['level']
         if entry['level'] == 'WARNING':
