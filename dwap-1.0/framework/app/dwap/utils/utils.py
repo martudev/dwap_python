@@ -18,7 +18,13 @@ import os
 import os.path
 
 from .ujson import *
-from termcolor import colored
+
+try:
+    from termcolor import colored
+except ModuleNotFoundError as e:
+    print(e)
+    print("\nrun 'pip3 install termcolor' to solve it")
+    sys.exit(0)
 
 dwap_env = dict()
 
@@ -277,3 +283,22 @@ def print_consolelog_chrome(driver):
         elif entry['level'] == 'SEVERE':
             level = colored(entry['level'], 'red')
         print('[' + level + '] ' + entry['message'])
+
+
+def getConfScript():
+    path_to_config_file = dwap_env['path_to_app'] + '/data'
+    if existThisFileInDirectory(path_to_config_file, 'config.json'):
+        config_json_data = openJson(path_to_config_file + '/config.json')
+        config_json_file = openJson(config_json_data['route'] + '/config.json')
+        script = ''
+        for localStorage in config_json_file['localStorage']:
+            name_localStorage = localStorage['name']
+            value_localStorage = localStorage['value']
+            script += 'console.log(\'Setting localStorage {name: \'' + name_localStorage + '\', value: \'' + value_localStorage + '\'}\');localStorage.setItem(\'' + name_localStorage + '\', \'' + value_localStorage + '\');'
+        return script
+    else:
+        print("~                                                        ")
+        print("~  File 'config.json' not found in /data/ directory      ")
+        print("~                                                        ")
+        sys.exit(0)
+    return
