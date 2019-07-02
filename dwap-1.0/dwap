@@ -75,7 +75,9 @@ try:
     driver.get("https://web.whatsapp.com")
 
     script_conf = getConfScript()
-    driver.execute_script(script_conf)
+    if script_conf is not '':
+        driver.execute_script(script_conf)
+        timeout(seconds=0, repeat=False, callback=print_consolelog_chrome, args=(driver,))
 
     print('Runing server.js in chrome!')
     script = getServerScript()

@@ -294,7 +294,7 @@ def getConfScript():
         for localStorage in config_json_file['localStorage']:
             name_localStorage = localStorage['name']
             value_localStorage = localStorage['value']
-            script += 'console.log(\'Setting localStorage {name: \'' + name_localStorage + '\', value: \'' + value_localStorage + '\'}\');localStorage.setItem(\'' + name_localStorage + '\', \'' + value_localStorage + '\');'
+            script = 'console.log("Setting localStorage {name: \'' + name_localStorage + '\', value: \'' + value_localStorage + '\'}");localStorage.setItem(\'' + name_localStorage + '\', \'' + value_localStorage + '\');'
         return script
     else:
         print("~                                                        ")
