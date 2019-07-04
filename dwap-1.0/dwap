@@ -64,11 +64,8 @@ try:
     # averiguar como se agrega en firefox
     chrome_options.add_extension(os.path.join(dwap_env['path_to_modules'], 'Ignore-x.zip'))
 
-
     caps = DesiredCapabilities.CHROME
     caps['goog:loggingPrefs'] = {'browser': 'ALL'} #https://github.com/SeleniumHQ/selenium/wiki/Logging and https://stackoverflow.com/questions/48313111/python-getting-the-console-log-output-of-a-function-in-selenium?rq=1
-
-    #chrome_options.set_capability('loggingPrefs', capabilities)
 
     driver = webdriver.Chrome(options=chrome_options, executable_path=chrome_driver, desired_capabilities=caps)
 
