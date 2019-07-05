@@ -209,7 +209,7 @@ class Utils(object):
         if not Files.existThisFileInDirectory(path + '/data', 'config.json'):
             data = {}
             data['route'] = path_to_serverJs
-            Files.openFileAndWriteJson(path_to_config_file, data)
+            Json.openFileAndWriteJson(path_to_config_file, data)
             first_time_config_file = True
         else:
             data = Json.openJson(path_to_config_file)
