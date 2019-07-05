@@ -26,11 +26,12 @@ path_to_app = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'fram
 
 sys.path.append(path_to_app)
 
-from dwap.utils.utils import *
+from dwap.utils.utils import Utils
+from dwap.utils.utils import Dictionary
 from dwap.utils.utime import *
 
 try:
-    installed_chrome_version = getChromeVersion()
+    installed_chrome_version = Utils.getChromeVersion()
 
     chrome_options = Options()
 
@@ -43,7 +44,7 @@ try:
     print("~                        |__|         ")
     print("~                                     ")
 
-    cmds_program(chrome_options)
+    Utils.cmds_program(chrome_options)
 
     print("~  using chrome v" + installed_chrome_version + ", https://www.dwap.com    ")
     print("~                                     ")
@@ -53,16 +54,16 @@ try:
 
     #chrome_options.add_argument("--headless")
     # chrome_options.add_argument("--window-size=1024x1400")
-    chrome_options.add_argument('--user-data-dir=' + os.path.join(dwap_env['origin_path'], 'User_Data'))
+    chrome_options.add_argument('--user-data-dir=' + os.path.join(Dictionary.dwap_env['origin_path'], 'User_Data'))
     chrome_options.add_argument('--allow-running-insecure-content')
 
     # download Chrome Webdriver
     # http://chromedriver.chromium.org/downloads
     # put driver executable file in the script directory
-    chrome_driver = os.path.join(dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
+    chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_' + installed_chrome_version)
 
     # averiguar como se agrega en firefox
-    chrome_options.add_extension(os.path.join(dwap_env['path_to_modules'], 'Ignore-x.zip'))
+    chrome_options.add_extension(os.path.join(Dictionary.dwap_env['path_to_modules'], 'Ignore-x.zip'))
 
     caps = DesiredCapabilities.CHROME
     caps['goog:loggingPrefs'] = {'browser': 'ALL'} #https://github.com/SeleniumHQ/selenium/wiki/Logging and https://stackoverflow.com/questions/48313111/python-getting-the-console-log-output-of-a-function-in-selenium?rq=1
@@ -71,17 +72,17 @@ try:
 
     driver.get("https://web.whatsapp.com")
 
-    script_conf = getConfScript()
+    script_conf = Utils.getConfScript()
     if script_conf is not '':
         driver.execute_script(script_conf)
-        timeout(seconds=0, repeat=False, callback=print_consolelog_chrome, args=(driver,))
+        timeout(seconds=0, repeat=False, callback=Utils.print_consolelog_chrome, args=(driver,))
 
     print('Runing server.js in chrome!')
-    script = getServerScript()
+    script = Utils.getServerScript()
     driver.execute_script(script)
     print('Script executed!')
 
-    t1 = timeout(seconds=0.5, repeat=True, callback=print_consolelog_chrome, args=(driver,))
+    t1 = timeout(seconds=0.5, repeat=True, callback=Utils.print_consolelog_chrome, args=(driver,))
 
     #driver.close()
     sys.exit(-1)
