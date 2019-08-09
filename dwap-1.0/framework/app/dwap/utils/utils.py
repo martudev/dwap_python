@@ -189,11 +189,11 @@ class Utils(object):
 
 
     def getChromeVersion():
-        chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_74')
+        chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_75')
         chrome_version_options = Options()
         chrome_version_options.add_argument("--headless")  # lo hacemos para minimizar el chrome ya que solo queremos obtener la version
         versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)  # 'chromedriver_74' => 'version' | 'chromedriver_75' => 'browserVersion'
-        browser_version = versionDriver.capabilities['version']
+        browser_version = versionDriver.capabilities['browserVersion']
         versionDriver.quit()
         return browser_version.split('.')[0]
 
