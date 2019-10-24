@@ -16,6 +16,7 @@ from selenium import webdriver
 import sys
 import os
 import os.path
+import json
 
 from .ujson import Json
 from .ufiles import Files
@@ -298,6 +299,12 @@ class Utils(object):
             elif entry['level'] == 'SEVERE':
                 level = colored(entry['level'], 'red')
             print('[' + level + '] ' + entry['message'])
+        browser_log = driver.get_log('performance')
+        events = [json.loads(entry['message'])['message'] for entry in browser_log]
+        events = [event for event in events if 'Network.response' in event['method']]
+
+        for i in events:
+            print(i)
 
 
     def getConfScript():
