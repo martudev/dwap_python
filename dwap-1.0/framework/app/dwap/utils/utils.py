@@ -36,6 +36,7 @@ class Dictionary():
     dwap_env['origin_path'] = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])))
     dwap_env['path_to_app'] = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app')
     dwap_env['path_to_modules'] = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app', 'dwap', 'modules')
+    dwap_env['print_network_logs'] = False
 
 
 class Utils(object):
@@ -69,6 +70,8 @@ class Utils(object):
                         chrome_options.add_experimental_option("detach", True)
                         print("~  with chrome keep open.    ")
                         print("~                            ")
+            if Utils.getArgs(2) == '--network':
+                    Dictionary.dwap_env['print_network_logs'] = True
         elif enviroment == 'help':
             print("~  Usage: dwap <cmd> or dwap <cmd> --[options]=<value>                 ")
             print("~                                                                      ")
@@ -77,24 +80,12 @@ class Utils(object):
             print("~  * run      Run de WhatsApp framework as default                     ")
             print("~  * test     Run de WhatsApp framework as testing mode                ")
             print("~  * help     Show dwap help                                           ")
+            print("~  * set      Set all dwap settings                                    ")
             print("~  * <cmd> --[options]=<value>:   with <value>,  x_value     Example: dwap test --test_wpp=true")
             print("~                                                y_value     For more options write 'dwap --options help'")
             print("~                                                z_value               ")
-            print("~  * change   Change one dwap settings                                 ")
-            print("~  * set      Set all dwap settings                                    ")
-            print("~  * revert   Revert one dwap settings                                 ")
             print("~                                                                      ")
             print("~                                                                      ")
-            print("~  Options [options]:                                                  ")
-            print("~ --------------------                                                 ")
-            print("~  * test_wpp      Run de WhatsApp framework as default                ")
-            print("~                  Example: dwap test --test_wpp=true")
-            print("                                                                       ")
-            print("~  * route         Change a route directory in settings                ")
-            print("~                  Example: dwap change --route")
-            print("~                                                                      ")
-            print("~  * keep          Keeps a window opened on close or stop script       ")
-            print("~                  Example: dwap run --keep=chrome")
             print("~                                                                      ")
             print("~                                                                      ")
             print("~  All Example Commands:                                               ")
@@ -102,10 +93,7 @@ class Utils(object):
             print("~  * dwap run                                                          ")
             print("~  * dwap run --keep=chrome                                            ")
             print("~  * dwap test                                                         ")
-            print("~  * dwap test --test_wpp=true                                         ")
-            print("~  * dwap change --route                                               ")
             print("~  * dwap set --route                                                  ")
-            print("~  * dwap revert --route                                               ")
             print("~  * dwap help                                                         ")
             print("~                                                                      ")
             print("~                                                                      ")
@@ -113,24 +101,6 @@ class Utils(object):
             print("~  More Info:  https://www.dwap.com/help                               ")
             print("~                                                                      ")
             sys.exit(0)
-        elif enviroment == 'change':
-            args = getArgs(2)
-            if args == '--route':
-                path = os.getcwd()
-                if Utils.existServerJSInPath(path):
-                    Utils.changeDefaultRoute(Dictionary.dwap_env['path_to_app'], path)
-                    print("~                                               ")
-                    print("~  Done! changed default route to '" + path + "'")
-                    print("~                                               ")
-                    sys.exit(0)
-                else:
-                    print("~                                              ")
-                    print("~  Not found 'server.js' in this path          ")
-                    print("~                                              ")
-                    sys.exit(0)
-            else:
-                Utils.commandNotFound()
-                sys.exit(0)
         elif enviroment == 'set':
             args = Utils.getArgs(2)
             if args == '--route':
@@ -140,29 +110,6 @@ class Utils(object):
                     print("~                                               ")
                     print("~  Done! changed default route to '" + path + "'")
                     print("~                                               ")
-                    sys.exit(0)
-                else:
-                    print("~                                              ")
-                    print("~  Not found 'server.js' in this path          ")
-                    print("~                                              ")
-                    sys.exit(0)
-            else:
-                Utils.commandNotFound()
-                sys.exit(0)
-        elif enviroment == 'revert':
-            args = Utils.getArgs(2)
-            if args == '--route':
-                path = os.getcwd()
-                if Utils.existServerJSInPath(path):
-                    new_path = Utils.revertDefaultRoute(Dictionary.dwap_env['path_to_app'])
-                    if new_path is None:
-                        print("~                                        ")
-                        print("~  Error! /data/ folder not exist.   Run dwap change --route to create /data/ folder")
-                        print("~                                        ")
-                    else:
-                        print("~                                               ")
-                        print("~  Done! changed default route to '" + new_path + "'")
-                        print("~                                               ")
                     sys.exit(0)
                 else:
                     print("~                                              ")
@@ -199,35 +146,8 @@ class Utils(object):
         return browser_version.split('.')[0]
 
 
-    def changeDefaultRoute(path, path_to_serverJs):
-        path_to_config_file = path + '/data/config.json'
-        path_to_cbackup_file = path + '/data/config.backup.json'
-
-        if not Files.existDirectory(path + '/data'):
-            os.mkdir(path + '/data')
-
-        first_time_config_file = False
-        if not Files.existThisFileInDirectory(path + '/data', 'config.json'):
-            data = {}
-            data['route'] = path_to_serverJs
-            Json.openFileAndWriteJson(path_to_config_file, data)
-            first_time_config_file = True
-        else:
-            data = Json.openJson(path_to_config_file)
-            data['route'] = path_to_serverJs
-            Json.writeJson(path_to_config_file, data)
-
-        if not Files.existThisFileInDirectory(path + '/data', 'config.backup.json') and first_time_config_file:
-            data = {}
-            data['route'] = path_to_serverJs
-            Json.openFileAndWriteJson(path_to_cbackup_file, data)
-
-        return
-
-
     def setDefaultRoute(path, path_to_serverJs):
         path_to_config_file = path + '/data/config.json'
-        path_to_cbackup_file = path + '/data/config.backup.json'
 
         if not Files.existDirectory(path + '/data'):
             os.mkdir(path + '/data')
@@ -241,36 +161,7 @@ class Utils(object):
             data['route'] = path_to_serverJs
             Json.writeJson(path_to_config_file, data)
 
-        if not Files.existThisFileInDirectory(path + '/data', 'config.backup.json'):
-            data = {}
-            data['route'] = path_to_serverJs
-            Json.openFileAndWriteJson(path_to_cbackup_file, data)
-        else:
-            data = Json.openJson(path_to_cbackup_file)
-            data['route'] = path_to_serverJs
-            Json.writeJson(path_to_cbackup_file, data)
-
         return
-
-
-    def revertDefaultRoute(path):
-        path_to_config_file = path + '/data/config.json'
-        path_to_cbackup_file = path + '/data/config.backup.json'
-
-        if not Files.existDirectory(path + '/data'):
-            return None
-
-        path_route = None
-        if Files.existThisFileInDirectory(path + '/data', 'config.backup.json'):
-            data = Json.openJson(path_to_cbackup_file)
-            path_route = data['route']
-
-        if Files.existThisFileInDirectory(path + '/data', 'config.json'):
-            data = Json.openJson(path_to_config_file)
-            data['route'] = path_route
-            Json.writeJson(path_to_config_file, data)
-
-        return path_route
 
 
     def existServerJSInPath(path):
@@ -282,7 +173,8 @@ class Utils(object):
         if Files.existThisFileInDirectory(path_to_config_file, 'config.json'):
             config_json_data = Json.openJson(path_to_config_file + '/config.json')
             js_file = Files.openFileAsReadMode(config_json_data['route'] + '/server.js')
-            return js_file.read()
+            js_conf_file = Files.openFileAsReadMode(config_json_data['route'] + '/WhatsAppModels.js')
+            return js_conf_file.read() + js_file.read()
         else:
             print("~                                                        ")
             print("~  File 'config.json' not found in /data/ directory      ")
@@ -291,7 +183,7 @@ class Utils(object):
         return
 
 
-    def print_consolelog_chrome(driver):
+    def print_consolelog_chrome(driver, printScriptNetwork):
         for entry in driver.get_log('browser'):
             level = entry['level']
             if entry['level'] == 'WARNING':
@@ -299,12 +191,15 @@ class Utils(object):
             elif entry['level'] == 'SEVERE':
                 level = colored(entry['level'], 'red')
             print('[' + level + '] ' + entry['message'])
-        browser_log = driver.get_log('performance')
-        events = [json.loads(entry['message'])['message'] for entry in browser_log]
-        events = [event for event in events if 'Network.response' in event['method']]
 
-        for i in events:
-            print(i)
+        ## getting network request logs
+        if (printScriptNetwork == True):
+            browser_log = driver.get_log('performance')
+            events = [json.loads(entry['message'])['message'] for entry in browser_log]
+            events = [event['params'] for event in events if 'Network.response' in event['method']]
+            for req in events:
+                if (req['type'] == "Script"):
+                    print('[' + str(req['response']['status']) + '] ' + req['response']['url'] + ' | fromDiskCache?: ' + str(req['response']['fromDiskCache']))
 
 
     def getConfScript():
