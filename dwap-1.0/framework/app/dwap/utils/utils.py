@@ -13,6 +13,7 @@
 
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
+from selenium.common.exceptions import SessionNotCreatedException
 import sys
 import os
 import os.path
@@ -37,6 +38,7 @@ class Dictionary():
     dwap_env['path_to_app'] = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app')
     dwap_env['path_to_modules'] = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'framework', 'app', 'dwap', 'modules')
     dwap_env['print_network_logs'] = False
+    dwap_env['enviroment'] = ''
 
 
 class Utils(object):
@@ -57,12 +59,13 @@ class Utils(object):
     def cmds_program(chrome_options):
         enviroment = Utils.getEnviroment()
         if enviroment == 'test':
-            print("~  runing in TEST mode.               ")
+            Dictionary.dwap_env['enviroment'] = 'test'
+            if Utils.getArgs(2) == '--network':
+                Dictionary.dwap_env['print_network_logs'] = True
+            print("~  runing in " + Dictionary.dwap_env['enviroment'].upper() + " mode.               ")
             print("~                                     ")
         elif enviroment == 'run':
-            print("~  runing in default mode.             ")
-            print("~                                      ")
-            print("~                                      ")
+            Dictionary.dwap_env['enviroment'] = 'dev'
             args = Utils.getArgs(2).split('=')
             if len(args) == 2:
                 if args[0] == '--keep':
@@ -71,7 +74,14 @@ class Utils(object):
                         print("~  with chrome keep open.    ")
                         print("~                            ")
             if Utils.getArgs(2) == '--network':
-                    Dictionary.dwap_env['print_network_logs'] = True
+                Dictionary.dwap_env['print_network_logs'] = True
+            args = Utils.getArgs(2).split('%')
+            if len(args) == 2:
+                if (args[0] == '--'):
+                    Dictionary.dwap_env['enviroment'] = args[1]
+            print("~  runing in " + Dictionary.dwap_env['enviroment'].upper() + " mode.             ")
+            print("~                                      ")
+            print("~                                      ")
         elif enviroment == 'help':
             print("~  Usage: dwap <cmd> or dwap <cmd> --[options]=<value>                 ")
             print("~                                                                      ")
@@ -92,8 +102,12 @@ class Utils(object):
             print("~ -------------------------                                            ")
             print("~  * dwap run                                                          ")
             print("~  * dwap run --keep=chrome                                            ")
+            print("~  * dwap run --network                                                ")
             print("~  * dwap test                                                         ")
+            print("~  * dwap test --network                                               ")
             print("~  * dwap set --route                                                  ")
+            print("~  * dwap run --%prod                                                  ")
+            print("~  * dwap run --%beta                                                  ")
             print("~  * dwap help                                                         ")
             print("~                                                                      ")
             print("~                                                                      ")
@@ -137,13 +151,85 @@ class Utils(object):
 
 
     def getChromeVersion():
-        chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_75')
-        chrome_version_options = Options()
-        chrome_version_options.add_argument("--headless")  # lo hacemos para minimizar el chrome ya que solo queremos obtener la version
-        versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)  # 'chromedriver_74' => 'version' | 'chromedriver_75' => 'browserVersion'
-        browser_version = versionDriver.capabilities['browserVersion']
-        versionDriver.quit()
-        return browser_version.split('.')[0]
+        exceptions = []
+
+        ## chromedriver_74
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_74')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['version']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        ## chromedriver_75
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_75')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['browserVersion']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        ## chromedriver_76
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_76')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['browserVersion']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        ## chromedriver_77
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_77')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['browserVersion']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        ## chromedriver_78
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_78')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['browserVersion']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        ## chromedriver_79
+        try:
+            chrome_driver = os.path.join(Dictionary.dwap_env['path_to_modules'], 'chromedriver_79')
+            chrome_version_options = Options()
+            chrome_version_options.add_argument("--headless")
+            versionDriver = webdriver.Chrome(options=chrome_version_options, executable_path=chrome_driver)
+            browser_version = versionDriver.capabilities['browserVersion']
+            versionDriver.quit()
+            return browser_version.split('.')[0]
+        except SessionNotCreatedException as e:
+            exceptions.append(e)
+
+        for e in exceptions:
+            print(e)
+
+        if exceptions:
+            raise Exception('Too many exceptions in getChromeVersion()')
 
 
     def setDefaultRoute(path, path_to_serverJs):
@@ -208,7 +294,7 @@ class Utils(object):
             config_json_data = Json.openJson(path_to_config_file + '/config.json')
             config_json_file = Json.openJson(config_json_data['route'] + '/config.json')
             script = ''
-            for localStorage in config_json_file['localStorage']:
+            for localStorage in config_json_file[Dictionary.dwap_env['enviroment'] + '.localStorage']:
                 name_localStorage = localStorage['name']
                 value_localStorage = localStorage['value']
                 script += 'console.log("Setting localStorage {name: \'' + name_localStorage + '\', value: \'' + value_localStorage + '\'}");localStorage.setItem(\'' + name_localStorage + '\', \'' + value_localStorage + '\');'
