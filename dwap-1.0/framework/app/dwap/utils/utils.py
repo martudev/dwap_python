@@ -21,6 +21,7 @@ import json
 
 from .ujson import Json
 from .ufiles import Files
+from .errors import *
 
 try:
     from termcolor import colored
@@ -126,10 +127,7 @@ class Utils(object):
                     print("~                                               ")
                     sys.exit(0)
                 else:
-                    print("~                                              ")
-                    print("~  Not found 'server.js' in this path          ")
-                    print("~                                              ")
-                    sys.exit(0)
+                    Error("Not found 'server.js' in this path")
             else:
                 Utils.commandNotFound()
                 sys.exit(0)
@@ -144,9 +142,7 @@ class Utils(object):
 
 
     def commandNotFound():
-        print("~                                       ")
-        print("~  Command not found.  See dwap help    ")
-        print("~                                       ")
+        Error("Command not found.  See dwap help")
         return
 
 
@@ -262,10 +258,7 @@ class Utils(object):
             js_conf_file = Files.openFileAsReadMode(config_json_data['route'] + '/WhatsAppModels.js')
             return js_conf_file.read() + js_file.read()
         else:
-            print("~                                                        ")
-            print("~  File 'config.json' not found in /data/ directory      ")
-            print("~                                                        ")
-            sys.exit(0)
+            Error("File 'config.json' not found in /data/ directory")
         return
 
 
@@ -300,8 +293,5 @@ class Utils(object):
                 script += 'console.log("Setting localStorage {name: \'' + name_localStorage + '\', value: \'' + value_localStorage + '\'}");localStorage.setItem(\'' + name_localStorage + '\', \'' + value_localStorage + '\');'
             return script
         else:
-            print("~                                                        ")
-            print("~  File 'config.json' not found in /data/ directory      ")
-            print("~                                                        ")
-            sys.exit(0)
+            Error("File 'config.json' not found in /data/ directory")
         return
